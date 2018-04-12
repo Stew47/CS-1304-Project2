@@ -12,9 +12,9 @@ package Project2;
  * P.S. still have my images stored differently then you, will fix it tommorow also
 */
 
-//randomizer, not so random with 2 of each
-//game reset and counter
-//image compairing
+//randomizer, not so random with 2 of each ---done
+//game reset and counter 
+//image compairing --done
 //quit button
 //win condition thing
 //algorithm step the step
@@ -26,12 +26,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.image.PixelReader;
 
 public class CardGame extends Application {
 
 	private int counter = 0;
 	private int score = 0;
 	private int[] cardCount = new int[8];
+	ImageView test = new ImageView("image/front.png");
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -44,7 +46,7 @@ public class CardGame extends Application {
 		
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
-				ImageView image = new ImageView("./image/front.png");
+				ImageView image = new ImageView("image/front.png");
 				
 				image.setPreserveRatio(true);
 				image.fitHeightProperty().bind(gpane.heightProperty().subtract(20).divide(4));
@@ -54,8 +56,14 @@ public class CardGame extends Application {
 				
 				
 				image.setOnMousePressed(e -> {
+					
 					//randomizer, array of image files selected
-					image.setImage(randImage());
+					if(compareImages(image.getImage(), test.getImage())) {
+						image.setImage(randImage());
+						System.out.println("test");
+						counter = counter + 1;
+					}
+					
 					
 					//check if image is already a flipped card
 					
@@ -66,7 +74,7 @@ public class CardGame extends Application {
 
 
 		//sets the title size and then shows the scene
-				Scene scene = new Scene(gpane,800,600);
+				Scene scene = new Scene(gpane,450,600);
 				primaryStage.setTitle("Memory Card Game");
 				primaryStage.setScene(scene);
 				primaryStage.show();
@@ -75,8 +83,8 @@ public class CardGame extends Application {
 	//returns random image from array of card images
 	public Image randImage() {
 		Image rand;
-		Image[] cards = {new Image("./image/num1.png"), new Image("./image/num2.png"),new Image("./image/num3.png"),new Image("./image/num4.png"),
-				new Image("./image/num5.png"),new Image("./image/num6.png"),new Image("./image/num7.png"),new Image("./image/num8.png")};		
+		Image[] cards = {new Image("image/num1.png"), new Image("image/num2.png"),new Image("image/num3.png"),new Image("image/num4.png"),
+				new Image("image/num5.png"),new Image("image/num6.png"),new Image("image/num7.png"),new Image("image/num8.png")};		
 		int randNum;
 		
 		//checks if card has already been called twice, re-rolls randnum until a card without two uses is found
@@ -99,6 +107,32 @@ public class CardGame extends Application {
 	//not currently in use, will work on this tomorrow before we meet. just ignore it unless you want to give it a try
 	public boolean compareImages(Image pic1, Image pic2) {
 		boolean isSame = true;
+		
+		
+		//fix height/width mismatch
+		if(pic1.getWidth()==pic2.getWidth()) {
+			if(pic1.getHeight()==pic2.getHeight()) {
+				for (int i = 0; pic1.getWidth() > i;i++) {
+					for (int j = 0; pic1.getHeight() > j; j++) {
+						if (pic1.getPixelReader().getArgb(i, j) == 
+								pic2.getPixelReader().getArgb(i, j)) {
+							System.out.println("true");
+						} else {
+							isSame = false;
+							System.out.println("False");
+							
+						}
+					}
+				}
+			} else {
+				isSame = false;
+			}
+		} else {
+			isSame = false;
+		}
+		
+		
+		
 		
 		
 		
