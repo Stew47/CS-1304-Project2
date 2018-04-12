@@ -22,9 +22,12 @@ package Project2;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.image.PixelReader;
 
@@ -37,7 +40,6 @@ public class CardGame extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
 		GridPane gpane = new GridPane();
 		gpane.setHgap(5);
 		gpane.setVgap(5);
@@ -49,35 +51,36 @@ public class CardGame extends Application {
 				ImageView image = new ImageView("image/front.png");
 				
 				image.setPreserveRatio(true);
-				image.fitHeightProperty().bind(gpane.heightProperty().subtract(20).divide(4));
+				image.fitHeightProperty().bind(gpane.heightProperty().subtract(gpane.heightProperty().divide(5)).divide(4));
 				image.fitWidthProperty().bind(gpane.widthProperty().subtract(20).divide(4));
 				
 				gpane.add(image, i, j);		
 				
 				
 				image.setOnMousePressed(e -> {
-					
 					//randomizer, array of image files selected
 					if(compareImages(image.getImage(), test.getImage())) {
 						image.setImage(randImage());
-						System.out.println("test");
 						counter = counter + 1;
-					}
-					
-					
-					//check if image is already a flipped card
-					
+					}					
 				});
 				
 			}
 		}
 
-
+		Button btQuit = new Button("Quit");
+		gpane.add(btQuit,0,5);
+		
 		//sets the title size and then shows the scene
-				Scene scene = new Scene(gpane,450,600);
+				Scene scene = new Scene(gpane,350,600);
 				primaryStage.setTitle("Memory Card Game");
 				primaryStage.setScene(scene);
 				primaryStage.show();
+				
+				
+		btQuit.setOnAction(e -> {
+			primaryStage.close();
+		});
 	}
 	
 	//returns random image from array of card images
@@ -116,11 +119,8 @@ public class CardGame extends Application {
 					for (int j = 0; pic1.getHeight() > j; j++) {
 						if (pic1.getPixelReader().getArgb(i, j) == 
 								pic2.getPixelReader().getArgb(i, j)) {
-							System.out.println("true");
 						} else {
-							isSame = false;
-							System.out.println("False");
-							
+							isSame = false;							
 						}
 					}
 				}
