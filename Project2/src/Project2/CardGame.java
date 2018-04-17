@@ -102,8 +102,9 @@ public class CardGame extends Application {
 				
 				image.setOnMousePressed(e -> {
 					//checks if the card is flipped, if not a new image is assigned to it
-					if(compareImages(image.getImage(), new Image("image/front.png"))) {
-						image.setImage(randImage());
+					if(compareImages(image.getImage(), new Image("image/front.png")) || counter == 2) {
+						System.out.println("test1");
+						image.setImage(new Image("image/num2.png"));
 						
 						counter += 1;
 						System.out.println(counter);
@@ -111,11 +112,18 @@ public class CardGame extends Application {
 					if(counter == 2) {
 						counter = 0;
 						
-						//wait
+						
 						//check if flipped images are matching, raise score if true
 						
+						try {
+							Thread.sleep(1000);
+						} 
+						catch(InterruptedException m) {
+							m.printStackTrace();
+						}
 						
-						setPane();
+						//setPane();
+						
 					}
 				});
 			}
