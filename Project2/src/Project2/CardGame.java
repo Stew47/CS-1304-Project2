@@ -8,17 +8,16 @@ package Project2;
 //screenshots
 
 import javafx.animation.FadeTransition;
+import javafx.animation.Animation.Status;
 import javafx.application.Application;
-import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Cell;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.image.PixelReader;
@@ -30,8 +29,8 @@ public class CardGame extends Application {
 	private GridPane gpane = new GridPane();
 	private Image[] images = new Image[16];
 	//not working
-	private Image lastCard = new Image("image/num1.png");
-	
+	private int lastCard = 16;
+	private boolean test = true;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -83,7 +82,13 @@ public class CardGame extends Application {
 	
 	//sets pane images to show back of the card, with each card having the necessary logic to run the game
 	public void setPane() {
-		ImageView[] cards = new ImageView[16];
+		ImageView[] cards = new ImageView[17];
+		
+		cards[16] = new ImageView(new Image("image/num1.png"));
+		
+		cards[16].setPreserveRatio(true);
+		cards[16].fitHeightProperty().bind(gpane.heightProperty().subtract(gpane.heightProperty().divide(5)).divide(4));
+		cards[16].fitWidthProperty().bind(gpane.widthProperty().subtract(20).divide(4));
 		
 		for (int i = 0; i < 16; i++) {
 			//sets each card to show its "back", adjusting size with window while preserving aspect ratio
@@ -101,7 +106,7 @@ public class CardGame extends Application {
 			ft1.setFromValue(1.0);
 			ft1.setToValue(0);
 			
-			FadeTransition ft2 = new FadeTransition(Duration.millis(1500), image);
+			FadeTransition ft2 = new FadeTransition(Duration.millis(500), image);
 			ft2.setToValue(1.0);
 			
 			//final so that cards event can actually use it, the value is reset on each loop
@@ -109,35 +114,53 @@ public class CardGame extends Application {
 			
 			//here be dragons
 			//lots o' bugs/not fully/properly implemented things
-			//the bulk of the game logic involved in "flipping" the cards, playing animations, keeping score, etc.
+			//the bulk of the game logic involved in "flipping" the cards, playing animations, keeping score, etc.		
 			cards[i].setOnMousePressed(e -> {
-				
 				//checks if the card is flipped, if it is not the animation is called and it is counted as one card flipped
 				//otherwise the code skips this
-				if(compareImages(image.getImage(), new Image("image/front.png"))) { 
+				
+				if(compareImages(image.getImage(), new Image("image/front.png")) && test) { 
 					counter += 1;
+					System.out.println("count" + counter);
+					test = false;
+					System.out.println("Running:" + test);
 					ft1.play();
 				}
 				
 				//when the fade transition to blank is finished, the image is swapped with the "front" of the card and fades back to 
 				//normal opacity
 				ft1.setOnFinished(n -> {
-					image.setImage(images[x]);
-					ft2.play();
 					
+					image.setImage(images[x]);
+					System.out.println("Card position: " +x);
+					
+					System.out.println("backs: " + compareImages(image.getImage(), cards[lastCard].getImage()));
+					if(compareImages(image.getImage(), cards[lastCard].getImage())) {
+						System.out.println("Same");
+						score += 1;
+						System.out.println(score);
+						
+					}
+					
+					lastCard = x;
+					ft2.play();
 				});
 				
+				 
+				 
 				//checks if the user score is equal to three, if so the game stops running and announces they have won
 				//otherwise if the user has clicked two cards the flipped counter is reset along with the pane, "flipping"
 				//the cards back to their "back". The cards however stay the same, as that is only set on first run
 				ft2.setOnFinished(n -> {			
+					
 					if(score == 3) {
 						System.out.println("You have won");
 					} else if (counter >= 2) {
 						counter = 0;
+						lastCard = 16;
 						setPane();
 					}
-					
+					test = true;
 					//TODO:Fix
 					//Should be used to keep last image clicked so that a comparision can be used, but currently bugged
 					//lastCard = images[x];
