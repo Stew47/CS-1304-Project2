@@ -1,4 +1,9 @@
+/*Project 2
+ * Edgar Perez & Tyler Stewart
+ * 
+*/
 package Project2;
+
 
 //game reset and counter/score --WIP
 //-score is not counting properly and reset is a little weird on running at the intended time, due in part to the possiblity of two or more transitions happening at once
@@ -102,11 +107,11 @@ public class CardGame extends Application {
 			cards[i] = image;
 			
 			//two transitions, one to fade to transparent, one to fade back to original opacity
-			FadeTransition ft1 = new FadeTransition(Duration.millis(500), image);
+			FadeTransition ft1 = new FadeTransition(Duration.millis(1000), image);
 			ft1.setFromValue(1.0);
 			ft1.setToValue(0);
 			
-			FadeTransition ft2 = new FadeTransition(Duration.millis(500), image);
+			FadeTransition ft2 = new FadeTransition(Duration.millis(1000), image);
 			ft2.setToValue(1.0);
 			
 			//final so that cards event can actually use it, the value is reset on each loop
@@ -155,7 +160,7 @@ public class CardGame extends Application {
 					
 					if(score == 3) {
 						System.out.println("You have won");
-					} else if (counter >= 2) {
+					} else if (counter >= 2 && score != 3) {
 						counter = 0;
 						lastCard = 16;
 						setPane();
